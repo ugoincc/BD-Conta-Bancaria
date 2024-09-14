@@ -167,4 +167,30 @@ public class ClienteService {
             System.out.println("Erro ao listar as transações: " + e.getMessage());
         }
     }
+    public void listarBancosDoCliente(String documento) {
+        String sql = "SELECT DISTINCT b.nomeBanco " +
+                     "FROM Banco b " +
+                     "JOIN ContaBancaria cb ON b.idBanco = cb.idBanco " +
+                     "JOIN Cliente c ON cb.idCliente = c.idCliente " +
+                     "WHERE c.CPF = ? OR c.CNPJ = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, documento);
+            stmt.setString(2, documento);
+
+            ResultSet rs = stmt.executeQuery();
+
+            System.out.println("Bancos associados ao cliente:");
+            if (!rs.isBeforeFirst()) { // Verifica se há resultados
+                System.out.println("Nenhum banco encontrado para este cliente.");
+            } else {
+                while (rs.next()) {
+                    System.out.println("Banco: " + rs.getString("nomeBanco"));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar bancos do cliente: " + e.getMessage());
+        }
+    }
 }

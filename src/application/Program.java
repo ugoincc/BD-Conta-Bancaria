@@ -21,6 +21,7 @@ public class Program {
             System.out.println("Menu:");
             System.out.println("1 - Listar todos os clientes");
             System.out.println("2 - Pesquisar cliente");
+            System.out.println("3 - Listar Bancos do Cliente");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -45,7 +46,6 @@ public class Program {
                         Date dataInicial = sdf.parse(dataInicialStr);
                         Date dataFinal = sdf.parse(dataFinalStr);
 
-                        // Verificação se a data inicial é antes da data final
                         if (dataInicial.before(dataFinal)) {
                             clienteService.listarTransacoesPorPeriodo(documento, dataInicial, dataFinal);
                         } else {
@@ -54,6 +54,11 @@ public class Program {
                     } catch (ParseException e) {
                         System.out.println("Formato de data inválido.");
                     }
+                    break;
+                case 3:
+                    System.out.println("Digite o CPF ou CNPJ do cliente:");
+                    String documentoBanco = scanner.nextLine();
+                    clienteService.listarBancosDoCliente(documentoBanco);
                     break;
                 case 0:
                     continuar = false;
@@ -69,3 +74,5 @@ public class Program {
         scanner.close();
     }
 }
+
+
