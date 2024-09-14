@@ -11,44 +11,37 @@ import db.DB;
 
 public class Program {
     public static void main(String[] args) {
-                while ( true )
-                {
-                Scanner scanner = new Scanner(System.in);
-                    System.out.println("\nEscolha uma opção:");
-                    System.out.println("1 - Listar Clientes e Empresas");
-                    System.out.println("2 - Listar Bancos do Cliente");
-                    System.out.println("3 - Emitir Extrato");
-                    System.out.println("0 - Fechar Programa");
-                    String menuOption = scanner.next();
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("\nEscolha uma opção:");
+            System.out.println("1 - Listar Clientes e Empresas");
+            System.out.println("2 - Listar Bancos do Cliente");
+            System.out.println("3 - Emitir Extrato");
+            System.out.println("0 - Fechar Programa");
+            String menuOption = scanner.next();
 
-                    if (menuOption.equals("1"))
-                    {
-                        listarClientes();
-                    }
-                    else if(menuOption.equals("2"))
-                    {
-                        listarContas(solicitarDoc());
-                    }
-                    else if(menuOption.equals("3"))
-                    {
-                        solicitarDoc();
-                    }
-                    if (menuOption.equals("0"))
-                    {
-                        System.out.println("Encerrando o programa.");
-                        DB.closeConnecction(); // Fechando a conexão ao encerrar o programa
-                        break;
-                    }
-                }
+            if (menuOption.equals("1")) {
+                listarClientes();
+            } else if (menuOption.equals("2")) {
+                listarContas(solicitarDoc());
+            } else if (menuOption.equals("3")) {
+                emitirExtrato();
+            }
+            if (menuOption.equals("0")) {
+                System.out.println("Encerrando o programa.");
+                DB.closeConnecction(); // Fechando a conexão ao encerrar o programa
+                break;
+            }
+        }
 
 
     }
 
     private static void listarContas(String documento) {
         String tipoDocumento = "";
-        if(documento.length() == 11){
+        if (documento.length() == 11) {
             tipoDocumento = "cpf";
-        }else if(documento.length() == 14){
+        } else if (documento.length() == 14) {
             tipoDocumento = "cnpj";
         }
 
@@ -74,7 +67,7 @@ public class Program {
             stmt.setString(1, documento);  // Substitua pelo CPF/CNPJ desejado
             ResultSet rs = stmt.executeQuery();
 
-            System.out.printf("%-20s | %-15s | %-15s | %-10s | %-15s | %-20s | %-10s%n",
+            System.out.printf("%-20s | %-15s | %-15s | %-20s | %-15s | %-20s | %-10s%n",
                     "Nome",
                     "Numero Conta",
                     "Banco",
@@ -92,7 +85,7 @@ public class Program {
                 Date dataAbertura = rs.getDate("DataDeAbertura");
                 float saldoAtual = rs.getFloat("SaldoAtual");
 
-                System.out.printf("%-20s | %-15s | %-15s | %-10s | %-15s | %-20s | %-10.2f%n",
+                System.out.printf("%-20s | %-15s | %-15s | %-20s | %-15s | %-20s | %-10.2f%n",
                         nomeCliente,
                         numeroConta,
                         banco,
@@ -149,7 +142,7 @@ public class Program {
 
     private static String solicitarDoc() {
         Scanner scanner = new Scanner(System.in);
-        String documento= "";
+        String documento = "";
 
         while (true) {
             System.out.println("Digite o número do documento(CPF ou CNPJ)");
@@ -162,47 +155,73 @@ public class Program {
         }
     }
 
-    private static void buscarClientePorCpfOuCnpj(String documento, String tipoDocumento) {
-        Connection conn = DB.getConnection();
-        String sql = "SELECT c.nomeCliente, tr.codTransacao, tr.dataTransacao, tr.descricaoTransacao, tr.valorTransacao, t.tipoConta, tt.indicador " +
-                     "FROM Cliente c " +
-                     "JOIN ContaBancaria cb ON c.idCliente = cb.idCliente " +
-                     "JOIN Transacao tr ON cb.idConta = tr.idConta " +
-                     "JOIN TipoConta t ON cb.idTipoConta = t.idTipoConta " +
-                     "JOIN TipoTransacao tt ON tr.idTipoTransacao = tt.idTipoTransacao " +
-                     "WHERE c." + tipoDocumento + " = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, documento);
+    private static void emitirExtrato() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Digite o número da conta: ");
+        String numeroConta = scanner.nextLine();
+
+        System.out.print("Digite a data de início (yyyy-MM-dd): ");
+        String dataInicio = scanner.nextLine();
+
+        System.out.print("Digite a data de fim (yyyy-MM-dd): ");
+        String dataFim = scanner.nextLine();
+
+        // Converte as strings para java.sql.Date
+        java.sql.Date sqlDataInicio = java.sql.Date.valueOf(dataInicio);
+        java.sql.Date sqlDataFim = java.sql.Date.valueOf(dataFim);
+
+        Connection conn = DB.getConnection();
+        String sql = "SELECT \n" +
+                "    t.dataTransacao AS Data, \n" +
+                "    t.codTransacao AS CodTransacao, \n" +
+                "    tt.indicador AS Tipo, \n" +
+                "    t.descricaoTransacao AS Descrição, \n" +
+                "    t.valorTransacao AS Valor \n" +
+                "FROM Transacao t\n" +
+                "JOIN ContaBancaria cb ON t.idConta = cb.idConta\n" +
+                "JOIN Cliente c ON cb.idCliente = c.idCliente\n" +
+                "JOIN TipoTransacao tt ON t.idTipoTransacao = tt.idTipoTransacao\n" +
+                "WHERE cb.numeroConta = ? \n" +
+                "AND t.dataTransacao BETWEEN ? AND ?\n" +
+                "ORDER BY t.dataTransacao;";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, numeroConta);
+            stmt.setDate(2, sqlDataInicio);
+            stmt.setDate(3, sqlDataFim);
+
             ResultSet rs = stmt.executeQuery();
 
-            if (!rs.next()) {
-                System.out.println("Nenhum cliente ou empresa encontrado com este " + tipoDocumento + ".");
-                return;
+            // Cabeçalho da tabela
+            System.out.printf("%-10s | %-12s | %-15s | %-20s | %-10s%n",
+                    "Data",
+                    "Cod Transacao",
+                    "Tipo",
+                    "Descrição",
+                    "Valor");
+
+            while (rs.next()) {
+                Date dataTransacao = rs.getDate("Data");
+                int codTransacao = rs.getInt("CodTransacao");
+                String tipo = rs.getString("Tipo");
+                String descricao = rs.getString("Descrição");
+                float valor = rs.getFloat("Valor");
+
+                System.out.printf("%-10s | %-12d | %-15s | %-20s | %-10.2f%n",
+                        dataTransacao.toString(),
+                        codTransacao,
+                        tipo,
+                        descricao,
+                        valor);
             }
 
-            System.out.println(tipoDocumento.equals("CPF") ? "Cliente encontrado:" : "Empresa encontrada:");
-            do {
-                String nomeCliente = rs.getString("nomeCliente");
-                int codTransacao = rs.getInt("codTransacao");
-                String dataTransacao = rs.getString("dataTransacao");
-                String descricaoTransacao = rs.getString("descricaoTransacao");
-                String tipoConta = rs.getString("tipoConta");
-                String indicador = rs.getString("indicador");
-                double valorTransacao = rs.getDouble("valorTransacao");
-
-                System.out.println("Nome do Cliente/Empresa: " + nomeCliente);
-                System.out.println("Código da Transação: " + codTransacao);
-                System.out.println("Data: " + dataTransacao);
-                System.out.println("Descrição: " + descricaoTransacao);
-                System.out.println("Tipo de Conta: " + tipoConta);
-                System.out.println("Tipo de Transação: " + indicador);
-                System.out.println("Valor da Transação: " + valorTransacao);
-                System.out.println("---------------------------------------------------");
-            } while (rs.next());
-
+            rs.close();
+            stmt.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao realizar operação no banco de dados: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
