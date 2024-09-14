@@ -10,7 +10,6 @@ import java.util.Scanner;
 import db.DB;
 
 public class Program {
-
     public static void main(String[] args) {
                 while ( true )
                 {
@@ -46,7 +45,13 @@ public class Program {
     }
 
     private static void listarContas(String documento) {
-        String tipoDocumento = documento.length() == 11 ? "cpf" : "cnpj";
+        String tipoDocumento = "";
+        if(documento.length() == 11){
+            tipoDocumento = "cpf";
+        }else if(documento.length() == 14){
+            tipoDocumento = "cnpj";
+        }
+
         System.out.println("Listando Contas:");
         Connection conn = DB.getConnection();
         String sql = "SELECT \n" +
@@ -144,27 +149,18 @@ public class Program {
 
     private static String solicitarDoc() {
         Scanner scanner = new Scanner(System.in);
-        String tipoBusca = "";
+        String documento= "";
 
         while (true) {
-            System.out.println("Você deseja buscar por CPF ou CNPJ?");
-            tipoBusca = scanner.nextLine().toLowerCase();
-
-            if (tipoBusca.equals("cpf")) {
-                System.out.println("Digite o CPF do cliente:");
-                String cpf = scanner.nextLine();
-                return cpf;
-            } else if (tipoBusca.equals("cnpj")) {
-                System.out.println("Digite o CNPJ da empresa:");
-                String cnpj = scanner.nextLine();
-                return cnpj;
+            System.out.println("Digite o número do documento(CPF ou CNPJ)");
+            documento = scanner.nextLine();
+            if (documento.length() == 11 || documento.length() == 14) {
+                return documento;
             } else {
-                System.out.println("Opção inválida, por favor escolha 'cpf' ou 'cnpj'.");
+                System.out.println("Documento inválido digite um CPF ou um CNPJ");
             }
         }
     }
-
-
 
     private static void buscarClientePorCpfOuCnpj(String documento, String tipoDocumento) {
         Connection conn = DB.getConnection();
