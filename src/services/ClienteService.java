@@ -181,16 +181,14 @@ public class ClienteService {
             ResultSet rs = stmt.executeQuery();
 
             System.out.println("Bancos associados ao cliente:");
-            if (!rs.isBeforeFirst()) { // Verifica se há resultados
-                System.out.println("Nenhum banco encontrado para este cliente.");
-            } else {
-                while (rs.next()) {
-                    System.out.println("Banco: " + rs.getString("nomeBanco"));
-                }
+           
+            while (rs.next()) {
+                System.out.println("Banco: " + rs.getString("nomeBanco"));
             }
 
         } catch (SQLException e) {
             System.out.println("Erro ao listar bancos do cliente: " + e.getMessage());
         }
     }
+
 }
