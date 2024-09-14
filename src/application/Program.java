@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Scanner;
 
 import db.DB;
@@ -16,7 +17,8 @@ public class Program {
                 Scanner scanner = new Scanner(System.in);
                     System.out.println("\nEscolha uma opção:");
                     System.out.println("1 - Listar Clientes e Empresas");
-                    System.out.println("2 - Emitir Extrato");
+                    System.out.println("2 - Listar Bancos do Cliente");
+                    System.out.println("3 - Emitir Extrato");
                     System.out.println("0 - Fechar Programa");
                     String menuOption = scanner.next();
 
@@ -25,6 +27,10 @@ public class Program {
                         listarClientes();
                     }
                     else if(menuOption.equals("2"))
+                    {
+                        listarContas(solicitarDoc());
+                    }
+                    else if(menuOption.equals("3"))
                     {
                         solicitarDoc();
                     }
@@ -37,6 +43,65 @@ public class Program {
                 }
 
 
+    }
+
+    private static void listarContas(String documento) {
+        String tipoDocumento = documento.length() == 11 ? "cpf" : "cnpj";
+        System.out.println("Listando Contas:");
+        Connection conn = DB.getConnection();
+        String sql = "SELECT \n" +
+                "    c.nomeCliente, \n" +
+                "    cb.numeroConta,\n" +
+                "    b.nomeBanco AS Banco,\n" +
+                "    a.nomeAgencia AS Agencia,\n" +
+                "    tc.tipoConta AS TipoDaConta,\n" +
+                "    cb.dataAbertura AS DataDeAbertura,\n" +
+                "    cb.saldoConta AS SaldoAtual\n" +
+                "FROM Cliente c\n" +
+                "JOIN ContaBancaria cb ON c.idCliente = cb.idCliente\n" +
+                "JOIN banco b ON cb.idBanco = b.idBanco\n" +
+                "JOIN agencia a ON cb.idAgencia = a.idAgencia\n" +
+                "JOIN TipoConta tc ON cb.idTipoConta = tc.idTipoConta\n" +
+                "WHERE c." + tipoDocumento + " = ?";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, documento);  // Substitua pelo CPF/CNPJ desejado
+            ResultSet rs = stmt.executeQuery();
+
+            System.out.printf("%-20s | %-15s | %-15s | %-10s | %-15s | %-20s | %-10s%n",
+                    "Nome",
+                    "Numero Conta",
+                    "Banco",
+                    "Agencia",
+                    "TipoDaConta",
+                    "DataDeAbertura",
+                    "SaldoAtual");
+
+            while (rs.next()) {
+                String nomeCliente = rs.getString("nomeCliente");
+                String numeroConta = rs.getString("numeroConta");
+                String banco = rs.getString("Banco");
+                String agencia = rs.getString("Agencia");
+                String tipoDaConta = rs.getString("TipoDaConta");
+                Date dataAbertura = rs.getDate("DataDeAbertura");
+                float saldoAtual = rs.getFloat("SaldoAtual");
+
+                System.out.printf("%-20s | %-15s | %-15s | %-10s | %-15s | %-20s | %-10.2f%n",
+                        nomeCliente,
+                        numeroConta,
+                        banco,
+                        agencia,
+                        tipoDaConta,
+                        (dataAbertura != null ? dataAbertura.toString() : "N/A"),
+                        saldoAtual);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void listarClientes() {
@@ -77,26 +142,28 @@ public class Program {
         }
     }
 
-    private static void solicitarDoc(){
-        System.out.println("Você deseja buscar por CPF ou CNPJ?");
+    private static String solicitarDoc() {
         Scanner scanner = new Scanner(System.in);
-        String tipoBusca = scanner.nextLine().toLowerCase();
+        String tipoBusca = "";
 
-        if (tipoBusca.equals("cpf")) {
-            System.out.println("Digite o CPF do cliente:");
-            String cpf = scanner.nextLine();
-            buscarClientePorCpfOuCnpj(cpf, "CPF");
-        } else if (tipoBusca.equals("cnpj")) {
-            System.out.println("Digite o CNPJ da empresa:");
-            String cnpj = scanner.nextLine();
-            buscarClientePorCpfOuCnpj(cnpj, "CNPJ");
-        } else {
-            System.out.println("Opção inválida, por favor escolha 'cpf' ou 'cnpj'.");
+        while (true) {
+            System.out.println("Você deseja buscar por CPF ou CNPJ?");
+            tipoBusca = scanner.nextLine().toLowerCase();
+
+            if (tipoBusca.equals("cpf")) {
+                System.out.println("Digite o CPF do cliente:");
+                String cpf = scanner.nextLine();
+                return cpf;
+            } else if (tipoBusca.equals("cnpj")) {
+                System.out.println("Digite o CNPJ da empresa:");
+                String cnpj = scanner.nextLine();
+                return cnpj;
+            } else {
+                System.out.println("Opção inválida, por favor escolha 'cpf' ou 'cnpj'.");
+            }
         }
-
-        System.out.println("Deseja buscar outro cliente ou empresa? (sim/nao)");
-        String resposta = scanner.nextLine().toLowerCase();
     }
+
 
 
     private static void buscarClientePorCpfOuCnpj(String documento, String tipoDocumento) {
