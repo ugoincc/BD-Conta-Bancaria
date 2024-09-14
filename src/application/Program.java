@@ -11,38 +11,99 @@ import db.DB;
 public class Program {
 
     public static void main(String[] args) {
+                while ( true )
+                {
+                Scanner scanner = new Scanner(System.in);
+                    System.out.println("\nEscolha uma opção:");
+                    System.out.println("1 - Listar Clientes e Empresas");
+                    System.out.println("2 - Emitir Extrato");
+                    System.out.println("0 - Fechar Programa");
+                    String menuOption = scanner.next();
+
+                    if (menuOption.equals("1"))
+                    {
+                        listarClientes();
+                    }
+                    else if(menuOption.equals("2"))
+                    {
+                        solicitarDoc();
+                    }
+                    if (menuOption.equals("0"))
+                    {
+                        System.out.println("Encerrando o programa.");
+                        DB.closeConnecction(); // Fechando a conexão ao encerrar o programa
+                        break;
+                    }
+                }
+
+
+    }
+
+    private static void listarClientes() {
+        System.out.println("Listando Clientes:");
+        Connection conn = DB.getConnection();
+        String sql = "SELECT \n" +
+                "    c.idCliente, \n" +
+                "    c.nomeCliente, \n" +
+                "    c.tipoCliente, \n" +
+                "    c.CPF, \n" +
+                "    c.CNPJ,\n" +
+                "    tc.tipoConta\n" +
+                "FROM Cliente c\n" +
+                "JOIN ContaBancaria cb ON c.idCliente = cb.idCliente\n" +
+                "JOIN TipoConta tc ON cb.idTipoConta = tc.idTipoConta\n" +
+                "ORDER BY c.idCliente;\n";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int idCliente = rs.getInt("idCliente");
+                String nomeCliente = rs.getString("nomeCliente");
+                String tipoCliente = rs.getString("tipoCliente");
+                String CPF = rs.getString("CPF");
+                String CNPJ = rs.getString("CNPJ");
+                String tipoConta = rs.getString("tipoConta");
+
+                System.out.println("ID Cliente: " + idCliente);
+                System.out.println("Nome: " + nomeCliente);
+                System.out.println("Tipo de Cliente: " + tipoCliente);
+                System.out.println("CPF: " + (CPF != null ? CPF : "N/A"));
+                System.out.println("CNPJ: " + (CNPJ != null ? CNPJ : "N/A"));
+                System.out.println("Tipo de Conta: " + tipoConta);
+                System.out.println("----------------------------");
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static void solicitarDoc(){
+        System.out.println("Você deseja buscar por CPF ou CNPJ?");
         Scanner scanner = new Scanner(System.in);
-        boolean continuarBusca = true;
+        String tipoBusca = scanner.nextLine().toLowerCase();
 
-        while (continuarBusca) {
-            System.out.println("Você deseja buscar por CPF ou CNPJ?");
-            String tipoBusca = scanner.nextLine().toLowerCase();
-
-            if (tipoBusca.equals("cpf")) {
-                System.out.println("Digite o CPF do cliente:");
-                String cpf = scanner.nextLine();
-                buscarClientePorCpfOuCnpj(cpf, "CPF");
-            } else if (tipoBusca.equals("cnpj")) {
-                System.out.println("Digite o CNPJ da empresa:");
-                String cnpj = scanner.nextLine();
-                buscarClientePorCpfOuCnpj(cnpj, "CNPJ");
-            } else {
-                System.out.println("Opção inválida, por favor escolha 'cpf' ou 'cnpj'.");
-                continue;
-            }
-
-            System.out.println("Deseja buscar outro cliente ou empresa? (sim/nao)");
-            String resposta = scanner.nextLine().toLowerCase();
-
-            if (!resposta.equals("sim")) {
-                continuarBusca = false;
-            }
+        if (tipoBusca.equals("cpf")) {
+            System.out.println("Digite o CPF do cliente:");
+            String cpf = scanner.nextLine();
+            buscarClientePorCpfOuCnpj(cpf, "CPF");
+        } else if (tipoBusca.equals("cnpj")) {
+            System.out.println("Digite o CNPJ da empresa:");
+            String cnpj = scanner.nextLine();
+            buscarClientePorCpfOuCnpj(cnpj, "CNPJ");
+        } else {
+            System.out.println("Opção inválida, por favor escolha 'cpf' ou 'cnpj'.");
         }
 
-        System.out.println("Encerrando o programa.");
-        scanner.close();
-        DB.closeConnecction(); // Fechando a conexão ao encerrar o programa
+        System.out.println("Deseja buscar outro cliente ou empresa? (sim/nao)");
+        String resposta = scanner.nextLine().toLowerCase();
     }
+
 
     private static void buscarClientePorCpfOuCnpj(String documento, String tipoDocumento) {
         Connection conn = DB.getConnection();
