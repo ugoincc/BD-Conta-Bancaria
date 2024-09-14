@@ -47,32 +47,27 @@ public class Program {
                 "    c.nomeCliente, \n" +
                 "    c.tipoCliente, \n" +
                 "    c.CPF, \n" +
-                "    c.CNPJ,\n" +
-                "    tc.tipoConta\n" +
+                "    c.CNPJ\n" +
                 "FROM Cliente c\n" +
-                "JOIN ContaBancaria cb ON c.idCliente = cb.idCliente\n" +
-                "JOIN TipoConta tc ON cb.idTipoConta = tc.idTipoConta\n" +
                 "ORDER BY c.idCliente;\n";
 
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
-
+            System.out.printf("%-10s | %-20s | %-15s | %-15s | %-20s%n", "ID Cliente", "Nome", "Tipo de Cliente", "CPF", "CNPJ");
             while (rs.next()) {
                 int idCliente = rs.getInt("idCliente");
                 String nomeCliente = rs.getString("nomeCliente");
                 String tipoCliente = rs.getString("tipoCliente");
                 String CPF = rs.getString("CPF");
                 String CNPJ = rs.getString("CNPJ");
-                String tipoConta = rs.getString("tipoConta");
+                System.out.printf("%-10d | %-20s | %-15s | %-15s | %-20s%n",
+                        idCliente,
+                        nomeCliente,
+                        tipoCliente,
+                        (CPF != null ? CPF : "N/A"),
+                        (CNPJ != null ? CNPJ : "N/A"));
 
-                System.out.println("ID Cliente: " + idCliente);
-                System.out.println("Nome: " + nomeCliente);
-                System.out.println("Tipo de Cliente: " + tipoCliente);
-                System.out.println("CPF: " + (CPF != null ? CPF : "N/A"));
-                System.out.println("CNPJ: " + (CNPJ != null ? CNPJ : "N/A"));
-                System.out.println("Tipo de Conta: " + tipoConta);
-                System.out.println("----------------------------");
             }
 
             rs.close();
@@ -81,7 +76,6 @@ public class Program {
             e.printStackTrace();
         }
     }
-
 
     private static void solicitarDoc(){
         System.out.println("Você deseja buscar por CPF ou CNPJ?");
