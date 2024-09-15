@@ -196,25 +196,27 @@ public class ClienteService {
     }
 
 
-    public void listarTransacoesPorPeriodo(String documento, Date dataInicial, Date dataFinal) {
-        String sql = "SELECT tr.codTransacao, tr.dataTransacao, tr.descricaoTransacao, tr.valorTransacao " +
+    public void emitirExtrato(String documento, String numeroConta, Date dataInicial, Date dataFinal) {
+        String sql = "SELECT tr.codTransacao, tr.dataTransacao, tr.descricaoTransacao, tr.valorTransacao, tt.indicador " +
                      "FROM Transacao tr " +
                      "JOIN ContaBancaria cb ON tr.idConta = cb.idConta " +
                      "JOIN Cliente c ON cb.idCliente = c.idCliente " +
-                     "WHERE (c.CPF = ? OR c.CNPJ = ?) AND tr.dataTransacao BETWEEN ? AND ?";
+                     "JOIN TipoTransacao tt ON tr.idTipoTransacao = tt.idTipoTransacao " +
+                     "WHERE (c.CPF = ? OR c.CNPJ = ?) AND cb.numeroConta = ? AND tr.dataTransacao BETWEEN ? AND ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, documento);
             stmt.setString(2, documento);
-            stmt.setDate(3, new java.sql.Date(dataInicial.getTime()));
-            stmt.setDate(4, new java.sql.Date(dataFinal.getTime()));
+            stmt.setString(3, numeroConta);
+            stmt.setDate(4, new java.sql.Date(dataInicial.getTime()));
+            stmt.setDate(5, new java.sql.Date(dataFinal.getTime()));
 
             ResultSet rs = stmt.executeQuery();
 
             boolean hasTransacoes = false;
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-            System.out.println("\nTransações no período:");
+            System.out.println("\nExtrato da conta " + numeroConta + " no período:");
             System.out.println("--------------------------------------------------");
 
             while (rs.next()) {
@@ -222,6 +224,7 @@ public class ClienteService {
                 System.out.println("Código da Transação: " + rs.getInt("codTransacao"));
                 System.out.println("Data: " + sdf.format(rs.getDate("dataTransacao")));
                 System.out.println("Descrição: " + rs.getString("descricaoTransacao"));
+                System.out.println("Tipo de Transação: " + rs.getString("indicador")); // Crédito ou Débito
                 System.out.println("Valor: R$ " + rs.getDouble("valorTransacao"));
                 System.out.println("--------------------------------------------------");
             }
@@ -231,7 +234,7 @@ public class ClienteService {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao listar as transações: " + e.getMessage());
+            System.out.println("Erro ao emitir o extrato: " + e.getMessage());
         }
     }
 
@@ -257,6 +260,25 @@ public class ClienteService {
 
         } catch (SQLException e) {
             System.out.println("Erro ao listar bancos do cliente: " + e.getMessage());
+        }
+    }
+    
+    public boolean validarContaBancaria(String documento, String numeroConta) {
+        String sql = "SELECT cb.numeroConta FROM ContaBancaria cb " +
+                     "JOIN Cliente c ON cb.idCliente = c.idCliente " +
+                     "WHERE (c.CPF = ? OR c.CNPJ = ?) AND cb.numeroConta = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, documento);
+            stmt.setString(2, documento);
+            stmt.setString(3, numeroConta);
+
+            ResultSet rs = stmt.executeQuery();
+            return rs.next(); // Se encontrar a conta, retorna true; caso contrário, false
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao validar a conta bancária: " + e.getMessage());
+            return false;
         }
     }
 

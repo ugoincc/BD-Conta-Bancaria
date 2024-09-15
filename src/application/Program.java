@@ -23,7 +23,7 @@ public class Program {
             System.out.println("2 - Listar todos os clientes/fisico");
             System.out.println("3 - Listar todos os clientes/juridico");
             System.out.println("4 - Listar Bancos do Cliente");
-            System.out.println("5 - Pesquisar cliente");
+            System.out.println("5 - Emitir Extrato");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -45,32 +45,46 @@ public class Program {
                     clienteService.listarBancosDoCliente(documentoBanco);
                     break;
                 case 5:
-                    System.out.println("Digite o CPF ou CNPJ do cliente:");
-                    String documento = scanner.nextLine();
-                    boolean clienteEncontrado = clienteService.pesquisarCliente(documento); // Agora retorna um booleano
+                	 System.out.println("Digite o CPF ou CNPJ do cliente:");
+                     String documento = scanner.nextLine();
+                     boolean clienteEncontrado = clienteService.pesquisarCliente(documento);
 
-                    // Somente se o cliente foi encontrado, pede as datas
-                    if (clienteEncontrado) {
-                        System.out.println("Digite a data inicial (dd/MM/yyyy):");
-                        String dataInicialStr = scanner.nextLine();
-                        System.out.println("Digite a data final (dd/MM/yyyy):");
-                        String dataFinalStr = scanner.nextLine();
+                     if (clienteEncontrado) {
+                    	 boolean contaValida = false;
+                         String numeroConta = "";
 
-                        try {
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                            Date dataInicial = sdf.parse(dataInicialStr);
-                            Date dataFinal = sdf.parse(dataFinalStr);
+                         while (!contaValida) {
+                             System.out.println("Selecione o número da conta bancária para emitir o extrato:");
+                             numeroConta = scanner.nextLine();
 
-                            if (dataInicial.before(dataFinal)) {
-                                clienteService.listarTransacoesPorPeriodo(documento, dataInicial, dataFinal);
-                            } else {
-                                System.out.println("Erro: A data inicial deve ser anterior à data final.");
-                            }
-                        } catch (ParseException e) {
-                            System.out.println("Formato de data inválido.");
-                        }
-                    }
-                    break;
+                             // Verifica se a conta pertence ao cliente
+                             contaValida = clienteService.validarContaBancaria(documento, numeroConta);
+
+                             if (!contaValida) {
+                                 System.out.println("Número de conta inválido para o cliente informado. Tente novamente.");
+                             }
+                         }
+
+                         System.out.println("Digite a data inicial (dd/MM/yyyy):");
+                         String dataInicialStr = scanner.nextLine();
+                         System.out.println("Digite a data final (dd/MM/yyyy):");
+                         String dataFinalStr = scanner.nextLine();
+
+                         try {
+                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                             Date dataInicial = sdf.parse(dataInicialStr);
+                             Date dataFinal = sdf.parse(dataFinalStr);
+
+                             if (dataInicial.before(dataFinal)) {
+                                 clienteService.emitirExtrato(documento, numeroConta, dataInicial, dataFinal);
+                             } else {
+                                 System.out.println("Erro: A data inicial deve ser anterior à data final.");
+                             }
+                         } catch (ParseException e) {
+                             System.out.println("Formato de data inválido.");
+                         }
+                     }
+                     break;
                 case 0:
                     continuar = false;
                     break;

@@ -1,5 +1,4 @@
 -- Reinserir todos os dados nas tabelas
-Todos os DADOS serão populados menos o da empresa GAMA(**IMPORTANTE
 -- Inserir DDIs
 INSERT INTO ddi (ddi) VALUES
 ('+55'),  -- Brasil
@@ -180,67 +179,67 @@ INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbert
 (10, '12345-5', 4, 4, '2023-10-01', 32000.00, 1),
 (10, '22345-5', 5, 5, '2023-10-01', 16000.00, 2);
 
--- Inserir Transações para Todos os Clientes
+-- Inserir Transações para Todos os Clientes Físicos e Jurídicos
 
 -- João Silva
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1001, '2023-07-05', 'Pagamento de boleto', 200.00, 'Boleto de energia', 1, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1002, '2023-07-15', 'Recebimento de PIX', 500.00, 'PIX de cliente', 2, 1);
+VALUES (1001, '2023-07-05', 'Pagamento de boleto', 200.00, 'Boleto de energia', 1, 2),
+       (1002, '2023-07-10', 'Compra em mercado', 350.00, 'Mercado', 1, 2),
+       (1003, '2023-07-15', 'Recebimento de salário', 3000.00, 'Salário', 1, 1),
+       (1004, '2023-07-20', 'Depósito em conta', 500.00, 'Depósito de cliente', 2, 1);
 
 -- Maria Oliveira
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1003, '2023-07-10', 'Depósito em conta', 1000.00, 'Depósito em dinheiro', 3, 1);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1004, '2023-07-20', 'Transferência bancária', 1500.00, 'Transferência para outra conta', 4, 2);
+VALUES (2001, '2023-06-12', 'Pagamento de fatura', 250.00, 'Fatura de cartão', 3, 2),
+       (2002, '2023-06-18', 'Depósito recebido', 800.00, 'Depósito bancário', 3, 1),
+       (2003, '2023-06-22', 'Pagamento de aluguel', 1500.00, 'Aluguel de junho', 4, 2),
+       (2004, '2023-06-30', 'Saque', 300.00, 'Saque em caixa eletrônico', 4, 2);
 
 -- Carlos Souza
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1005, '2023-06-12', 'Pagamento de fatura', 250.00, 'Fatura de cartão', 5, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1006, '2023-06-22', 'PIX recebido', 800.00, 'PIX de cliente', 6, 1);
+VALUES (3001, '2023-05-10', 'Pagamento de compra online', 1200.00, 'Compra de eletrônicos', 5, 2),
+       (3002, '2023-05-15', 'Recebimento de salário', 4000.00, 'Salário', 5, 1),
+       (3003, '2023-05-20', 'Transferência bancária', 1500.00, 'Transferência para amigo', 6, 2),
+       (3004, '2023-05-25', 'Depósito em conta', 2000.00, 'Depósito de cliente', 6, 1);
 
 -- Ana Pereira
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1007, '2023-06-05', 'Transferência recebida', 1200.00, 'Transferência de conta externa', 7, 1);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1008, '2023-06-17', 'Saque', 300.00, 'Saque em caixa eletrônico', 8, 2);
+VALUES (4001, '2023-07-01', 'Pagamento de boletos', 900.00, 'Boletos de casa', 7, 2),
+       (4002, '2023-07-05', 'Depósito em conta', 1200.00, 'Depósito mensal', 7, 1),
+       (4003, '2023-07-10', 'Saque em caixa', 300.00, 'Saque', 8, 2),
+       (4004, '2023-07-15', 'Recebimento de cliente', 5000.00, 'Pagamento de cliente', 8, 1);
 
 -- Pedro Costa
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1009, '2023-05-10', 'Pagamento de aluguel', 900.00, 'Aluguel do mês', 9, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (1010, '2023-05-25', 'Recebimento de pagamento', 4000.00, 'Pagamento de cliente', 10, 1);
+VALUES (5001, '2023-04-01', 'Pagamento de contas', 300.00, 'Contas de água', 9, 2),
+       (5002, '2023-04-05', 'Recebimento de salário', 12000.00, 'Salário mensal', 9, 1),
+       (5003, '2023-04-10', 'Transferência bancária', 4500.00, 'Transferência para investimento', 10, 2),
+       (5004, '2023-04-15', 'Recebimento de cliente', 8000.00, 'Depósito de cliente', 10, 1);
 
 -- Empresa XPTO
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2001, '2023-07-10', 'Pagamento de fornecedor', 5000.00, 'Pagamento de nota fiscal', 11, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2002, '2023-07-15', 'Recebimento de PIX', 2000.00, 'PIX de cliente', 12, 1);
+VALUES (6001, '2023-03-01', 'Pagamento de fornecedor', 10000.00, 'Pagamento de produtos', 11, 2),
+       (6002, '2023-03-05', 'Recebimento de pagamento', 15000.00, 'Recebimento de cliente', 11, 1),
+       (6003, '2023-03-10', 'Transferência para conta', 5000.00, 'Transferência bancária', 12, 2),
+       (6004, '2023-03-15', 'Pagamento de serviços', 2000.00, 'Serviço técnico', 12, 2);
 
 -- Empresa Alfa
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2003, '2023-06-01', 'Transferência bancária', 3000.00, 'Transferência para outra conta', 13, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2004, '2023-06-05', 'Depósito bancário', 6000.00, 'Depósito em caixa', 14, 1);
+VALUES (7001, '2023-02-01', 'Pagamento de fornecedor', 8000.00, 'Produtos adquiridos', 13, 2),
+       (7002, '2023-02-05', 'Recebimento de pagamento', 12000.00, 'Pagamento de cliente', 13, 1),
+       (7003, '2023-02-10', 'Depósito em conta', 3000.00, 'Depósito mensal', 14, 1),
+       (7004, '2023-02-15', 'Transferência para outra conta', 1000.00, 'Transferência de caixa', 14, 2);
 
 -- Empresa Beta
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2005, '2023-07-12', 'Pagamento de imposto', 7500.00, 'Pagamento de ICMS', 15, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2006, '2023-07-15', 'PIX recebido', 3000.00, 'Recebimento de cliente', 16, 1);
+VALUES (8001, '2023-01-01', 'Pagamento de imposto', 2000.00, 'ICMS', 15, 2),
+       (8002, '2023-01-05', 'Recebimento de pagamento', 10000.00, 'Recebimento de cliente', 15, 1),
+       (8003, '2023-01-10', 'Transferência para conta', 5000.00, 'Transferência bancária', 16, 2),
+       (8004, '2023-01-15', 'Pagamento de fornecedor', 6000.00, 'Nota fiscal', 16, 2);
 
 -- Empresa Delta
 INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2007, '2023-07-20', 'Pagamento de fornecedor', 5000.00, 'Pagamento de nota fiscal', 19, 2);
-
-INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
-VALUES (2008, '2023-07-25', 'Recebimento de PIX', 2000.00, 'PIX de cliente', 20, 1);
+VALUES (9001, '2023-07-01', 'Pagamento de fornecedor', 5000.00, 'Nota fiscal de produtos', 19, 2),
+       (9002, '2023-07-05', 'Recebimento de pagamento', 10000.00, 'Recebimento de cliente', 19, 1),
+       (9003, '2023-07-10', 'Transferência para conta', 3000.00, 'Transferência bancária', 20, 2),
+       (9004, '2023-07-15', 'Pagamento de serviços', 2000.00, 'Serviços terceirizados', 20, 2);
