@@ -20,8 +20,10 @@ public class Program {
         while (continuar) {
             System.out.println("Menu:");
             System.out.println("1 - Listar todos os clientes");
-            System.out.println("2 - Pesquisar cliente");
-            System.out.println("3 - Listar Bancos do Cliente");
+            System.out.println("2 - Listar todos os clientes/fisico");
+            System.out.println("3 - Listar todos os clientes/juridico");
+            System.out.println("4 - Listar Bancos do Cliente");
+            System.out.println("5 - Pesquisar cliente");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -32,33 +34,42 @@ public class Program {
                     clienteService.listarTodosClientes();
                     break;
                 case 2:
-                    System.out.println("Digite o CPF ou CNPJ do cliente:");
-                    String documento = scanner.nextLine();
-                    clienteService.pesquisarCliente(documento);
-
-                    System.out.println("Digite a data inicial (dd/MM/yyyy):");
-                    String dataInicialStr = scanner.nextLine();
-                    System.out.println("Digite a data final (dd/MM/yyyy):");
-                    String dataFinalStr = scanner.nextLine();
-
-                    try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                        Date dataInicial = sdf.parse(dataInicialStr);
-                        Date dataFinal = sdf.parse(dataFinalStr);
-
-                        if (dataInicial.before(dataFinal)) {
-                            clienteService.listarTransacoesPorPeriodo(documento, dataInicial, dataFinal);
-                        } else {
-                            System.out.println("Erro: A data inicial deve ser anterior à data final.");
-                        }
-                    } catch (ParseException e) {
-                        System.out.println("Formato de data inválido.");
-                    }
+                    clienteService.listarClientesFisicos();
                     break;
                 case 3:
+                    clienteService.listarClientesJuridicos();
+                    break;
+                case 4:
                     System.out.println("Digite o CPF ou CNPJ do cliente:");
                     String documentoBanco = scanner.nextLine();
                     clienteService.listarBancosDoCliente(documentoBanco);
+                    break;
+                case 5:
+                    System.out.println("Digite o CPF ou CNPJ do cliente:");
+                    String documento = scanner.nextLine();
+                    boolean clienteEncontrado = clienteService.pesquisarCliente(documento); // Agora retorna um booleano
+
+                    // Somente se o cliente foi encontrado, pede as datas
+                    if (clienteEncontrado) {
+                        System.out.println("Digite a data inicial (dd/MM/yyyy):");
+                        String dataInicialStr = scanner.nextLine();
+                        System.out.println("Digite a data final (dd/MM/yyyy):");
+                        String dataFinalStr = scanner.nextLine();
+
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                            Date dataInicial = sdf.parse(dataInicialStr);
+                            Date dataFinal = sdf.parse(dataFinalStr);
+
+                            if (dataInicial.before(dataFinal)) {
+                                clienteService.listarTransacoesPorPeriodo(documento, dataInicial, dataFinal);
+                            } else {
+                                System.out.println("Erro: A data inicial deve ser anterior à data final.");
+                            }
+                        } catch (ParseException e) {
+                            System.out.println("Formato de data inválido.");
+                        }
+                    }
                     break;
                 case 0:
                     continuar = false;
@@ -74,5 +85,3 @@ public class Program {
         scanner.close();
     }
 }
-
-

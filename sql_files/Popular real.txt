@@ -1,0 +1,246 @@
+-- Reinserir todos os dados nas tabelas
+Todos os DADOS serão populados menos o da empresa GAMA(**IMPORTANTE
+-- Inserir DDIs
+INSERT INTO ddi (ddi) VALUES
+('+55'),  -- Brasil
+('+1'),   -- EUA
+('+44'),  -- Reino Unido
+('+81'),  -- Japão
+('+61');  -- Austrália
+
+-- Inserir DDDs
+INSERT INTO ddd (ddd) VALUES
+('11'),  -- São Paulo
+('21'),  -- Rio de Janeiro
+('31'),  -- Belo Horizonte
+('51'),  -- Porto Alegre
+('61');  -- Brasília
+
+-- Inserir Unidades Federativas (UF)
+INSERT INTO UnidadeFederacao (siglaUF, nomeUF) VALUES
+('SP', 'São Paulo'),
+('RJ', 'Rio de Janeiro'),
+('MG', 'Minas Gerais'),
+('RS', 'Rio Grande do Sul'),
+('DF', 'Distrito Federal');
+
+-- Inserir Tipos de Logradouros
+INSERT INTO TipoLogradouro (siglaLogradouro, nomeLogradouro) VALUES
+('R', 'Rua'),
+('AV', 'Avenida'),
+('TR', 'Travessa'),
+('AL', 'Alameda'),
+('PR', 'Praça');
+
+-- Inserir Bairros
+INSERT INTO Bairro (nomeBairro) VALUES
+('Centro'), 
+('Jardim Paulista'), 
+('Copacabana'), 
+('Savassi'), 
+('Asa Sul');
+
+-- Inserir Cidades
+INSERT INTO Cidade (nomeCidade, UnidadeFederacao_siglaUF) VALUES
+('São Paulo', 'SP'),
+('Rio de Janeiro', 'RJ'),
+('Belo Horizonte', 'MG'),
+('Porto Alegre', 'RS'),
+('Brasília', 'DF');
+
+-- Inserir Bancos
+INSERT INTO banco (nomeBanco) VALUES
+('Banco XYZ'),
+('Banco ABC'),
+('Banco Delta'),
+('Banco Omega'),
+('Banco Alpha');
+
+-- Inserir Agências
+INSERT INTO agencia (nomeAgencia, idBanco) VALUES
+('Agência Central', 1),
+('Agência Norte', 2),
+('Agência Sul', 3),
+('Agência Leste', 4),
+('Agência Oeste', 5);
+
+-- Inserir Tipo de Conta
+INSERT INTO TipoConta (tipoConta) VALUES
+('Conta Corrente'),
+('Conta Poupança');
+
+-- Inserir Tipo de Transação
+INSERT INTO TipoTransacao (indicador) VALUES
+('credito'),
+('debito');
+
+-- Inserir Logradouros
+INSERT INTO Logradouro (nomeLogradouro, TipoLogradouro_siglaLogradouro) VALUES
+('Rua das Flores', 'R'),
+('Avenida Atlântica', 'AV'),
+('Travessa da Paz', 'TR'),
+('Alameda Santos', 'AL'),
+('Praça da Liberdade', 'PR');
+
+-- Inserir Endereços
+INSERT INTO Endereco (CEP, idLogradouro, idCidade, idBairro) VALUES
+('01000-000', 1, 1, 1),
+('02000-001', 2, 2, 2),
+('03000-002', 3, 3, 3),
+('04000-003', 4, 4, 4),
+('05000-004', 5, 5, 5);
+
+-- Inserir Clientes
+INSERT INTO Cliente (nomeCliente, tipoCliente, CPF, CNPJ, idEndereco) VALUES
+('João Silva', 'fisico', '12345678901', NULL, 1),
+('Maria Oliveira', 'fisico', '12345678902', NULL, 2),
+('Carlos Souza', 'fisico', '12345678903', NULL, 3),
+('Ana Pereira', 'fisico', '12345678904', NULL, 4),
+('Pedro Costa', 'fisico', '12345678905', NULL, 5),
+('Empresa XPTO', 'juridico', NULL, '98765432000101', 1),
+('Empresa Alfa', 'juridico', NULL, '98765432000201', 2),
+('Empresa Beta', 'juridico', NULL, '98765432000301', 3),
+('Empresa Gama', 'juridico', NULL, '98765432000401', 4),
+('Empresa Delta', 'juridico', NULL, '98765432000501', 5);
+
+-- Inserir Emails
+INSERT INTO Email (idCliente, enderecoEmail) VALUES
+(1, 'joao.silva@email.com'),
+(2, 'maria.oliveira@email.com'),
+(3, 'carlos.souza@email.com'),
+(4, 'ana.pereira@email.com'),
+(5, 'pedro.costa@email.com'),
+(6, 'contato@xpto.com.br'),
+(7, 'contato@alfa.com.br'),
+(8, 'contato@beta.com.br'),
+(9, 'contato@gama.com.br'),
+(10, 'contato@delta.com.br');
+
+-- Inserir Telefones
+INSERT INTO Telefone (idCliente, ddi_id, ddd_id, numTelefone) VALUES
+(1, 1, 1, '912345678'),
+(2, 2, 2, '923456789'),
+(3, 3, 3, '934567890'),
+(4, 4, 4, '945678901'),
+(5, 5, 5, '956789012'),
+(6, 1, 1, '967890123'),
+(7, 2, 2, '978901234'),
+(8, 3, 3, '989012345'),
+(9, 4, 4, '990123456'),
+(10, 5, 5, '901234567');
+
+-- Inserir Contas Bancárias (2 contas por cliente)
+-- João Silva
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(1, '12345-6', 1, 1, '2020-01-01', 10000.00, 1),
+(1, '22345-6', 2, 2, '2020-01-01', 5000.00, 2);
+
+-- Maria Oliveira
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(2, '12345-7', 3, 3, '2021-02-01', 7000.00, 1),
+(2, '22345-7', 4, 4, '2021-02-01', 3500.00, 2);
+
+-- Carlos Souza
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(3, '12345-8', 5, 5, '2022-03-01', 8000.00, 1),
+(3, '22345-8', 1, 1, '2022-03-01', 4000.00, 2);
+
+-- Ana Pereira
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(4, '12345-9', 2, 2, '2023-04-01', 6000.00, 1),
+(4, '22345-9', 3, 3, '2023-04-01', 3000.00, 2);
+
+-- Pedro Costa
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(5, '12345-0', 4, 4, '2020-05-01', 12000.00, 1),
+(5, '22345-0', 5, 5, '2020-05-01', 6000.00, 2);
+
+-- Empresa XPTO
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(6, '12345-1', 1, 1, '2019-06-01', 50000.00, 1),
+(6, '22345-1', 2, 2, '2019-06-01', 25000.00, 2);
+
+-- Empresa Alfa
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(7, '12345-2', 3, 3, '2020-07-01', 40000.00, 1),
+(7, '22345-2', 4, 4, '2020-07-01', 20000.00, 2);
+
+-- Empresa Beta
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(8, '12345-3', 5, 5, '2021-08-01', 45000.00, 1),
+(8, '22345-3', 1, 1, '2021-08-01', 22500.00, 2);
+
+-- Empresa Gama (sem transações)
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(9, '12345-4', 2, 2, '2022-09-01', 42000.00, 1),
+(9, '22345-4', 3, 3, '2022-09-01', 21000.00, 2);
+
+-- Empresa Delta
+INSERT INTO ContaBancaria (idCliente, numeroConta, idBanco, idAgencia, dataAbertura, saldoConta, idTipoConta) VALUES
+(10, '12345-5', 4, 4, '2023-10-01', 32000.00, 1),
+(10, '22345-5', 5, 5, '2023-10-01', 16000.00, 2);
+
+-- Inserir Transações para Todos os Clientes
+
+-- João Silva
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1001, '2023-07-05', 'Pagamento de boleto', 200.00, 'Boleto de energia', 1, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1002, '2023-07-15', 'Recebimento de PIX', 500.00, 'PIX de cliente', 2, 1);
+
+-- Maria Oliveira
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1003, '2023-07-10', 'Depósito em conta', 1000.00, 'Depósito em dinheiro', 3, 1);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1004, '2023-07-20', 'Transferência bancária', 1500.00, 'Transferência para outra conta', 4, 2);
+
+-- Carlos Souza
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1005, '2023-06-12', 'Pagamento de fatura', 250.00, 'Fatura de cartão', 5, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1006, '2023-06-22', 'PIX recebido', 800.00, 'PIX de cliente', 6, 1);
+
+-- Ana Pereira
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1007, '2023-06-05', 'Transferência recebida', 1200.00, 'Transferência de conta externa', 7, 1);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1008, '2023-06-17', 'Saque', 300.00, 'Saque em caixa eletrônico', 8, 2);
+
+-- Pedro Costa
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1009, '2023-05-10', 'Pagamento de aluguel', 900.00, 'Aluguel do mês', 9, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (1010, '2023-05-25', 'Recebimento de pagamento', 4000.00, 'Pagamento de cliente', 10, 1);
+
+-- Empresa XPTO
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2001, '2023-07-10', 'Pagamento de fornecedor', 5000.00, 'Pagamento de nota fiscal', 11, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2002, '2023-07-15', 'Recebimento de PIX', 2000.00, 'PIX de cliente', 12, 1);
+
+-- Empresa Alfa
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2003, '2023-06-01', 'Transferência bancária', 3000.00, 'Transferência para outra conta', 13, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2004, '2023-06-05', 'Depósito bancário', 6000.00, 'Depósito em caixa', 14, 1);
+
+-- Empresa Beta
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2005, '2023-07-12', 'Pagamento de imposto', 7500.00, 'Pagamento de ICMS', 15, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2006, '2023-07-15', 'PIX recebido', 3000.00, 'Recebimento de cliente', 16, 1);
+
+-- Empresa Delta
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2007, '2023-07-20', 'Pagamento de fornecedor', 5000.00, 'Pagamento de nota fiscal', 19, 2);
+
+INSERT INTO Transacao (codTransacao, dataTransacao, descricaoTransacao, valorTransacao, observacoes, idConta, idTipoTransacao)
+VALUES (2008, '2023-07-25', 'Recebimento de PIX', 2000.00, 'PIX de cliente', 20, 1);
