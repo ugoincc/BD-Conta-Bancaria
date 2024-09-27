@@ -208,9 +208,9 @@ Nenhuma transação encontrada para o período selecionado.
 
 - Java 8+
 - JDBC para conexão com banco de dados SQL
-- SQL para consultas e manipulação de dados
+- MySQL DBMS para consultas e manipulação de dados
 
-## Como Configurar o Banco de Dados
+## Antes de iniciar a aplicação:
 
 1. Configure um banco de dados SQL com os dados necessários.
 2. Utilize o script SQL de inserção fornecido (../sql_files) para criar as tabelas e popular as tabelas com dados.
